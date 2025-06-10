@@ -1,4 +1,4 @@
-const apiUrl = "https://api:5001/todos"; // Update port if needed
+const apiUrl = "https://192.168.56.108:5001/todos"; // Update port if needed
 
 const todoList = document.getElementById("todo-list");
 const todoForm = document.getElementById("todo-form");
