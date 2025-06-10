@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/TodoApi/">
+    <Project Path="TodoApi/TodoApi.csproj" />
+  </Folder>
+</Solution>
