@@ -1,8 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace TodoApi;
 
-public class AppDbContext : DbContext
+public class TodoDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options): base(options)
+    public TodoDbContext(DbContextOptions<TodoDbContext> options): base(options)
     {
     }
 
