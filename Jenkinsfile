@@ -4,8 +4,8 @@ pipeline {
     environment {
         REGISTRY_URL = 'harbor.registry.local'
         IMAGE_NAME = 'todo-api'
+        FRONTEND_IMAGE_NAME = 'todo-frontend'
         IMAGE_TAG = "v${BUILD_NUMBER}"
-        HARBOR_CREDENTIALS = credentials(' HARBOR_CREDENTIALS') // Jenkins credential ID
     }
 
     options {
@@ -32,6 +32,16 @@ pipeline {
             }
         }
 
+        stage('Build Frontend') {
+            steps {
+                dir('app/frontend') {
+                     sh """
+                            docker build -t ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} .
+                        """
+                }
+            }
+        }
+
         stage('Login to Harbor') {
             steps {
                 script {
@@ -41,6 +51,7 @@ pipeline {
                         passwordVariable: 'HARBOR_PASS'
                     )]) {
                         sh "docker login ${REGISTRY_URL} -u $HARBOR_USER -p $HARBOR_PASS"
+                        
                     }
                 }
             }
@@ -48,10 +59,9 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                script {
-                    sh """
-                        docker push ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG}
-                    """
+                 script {
+                    sh "docker push ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker push ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }
         }
@@ -59,9 +69,8 @@ pipeline {
         stage('Cleanup') {
             steps {
                 script {
-                    sh """
-                        docker rmi ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG} || true
-                    """
+                    sh "docker rmi ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG} || true"
+                    sh "docker rmi ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} || true"
                 }
             }
         }
