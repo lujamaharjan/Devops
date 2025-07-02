@@ -35,9 +35,13 @@ pipeline {
         stage('Login to Harbor') {
             steps {
                 script {
-                    sh """
-                       docker login ${REGISTRY_URL} -u admin -p Harbor12345
-                    """
+                     withCredentials([usernamePassword(
+                        credentialsId: 'HARBOR_CREDENTIALS',
+                        usernameVariable: 'HARBOR_USER',
+                        passwordVariable: 'HARBOR_PASS'
+                    )]) {
+                        sh "docker login ${REGISTRY_URL} -u $HARBOR_USER -p $HARBOR_PASS"
+                    }
                 }
             }
         }
