@@ -16,7 +16,7 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'master', url: 'https://github.com/your-username/your-repo.git'
+                git branch: 'master', url: 'https://github.com/lujamaharjan/Devops.git'
             }
         }
 
@@ -25,7 +25,7 @@ pipeline {
                 dir('app/backend') {
                     script {
                         sh """
-                            docker build -t ${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG} .
+                            docker build -t ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG} .
                         """
                     }
                 }
@@ -46,7 +46,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        docker push ${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}
+                        docker push ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG}
                     """
                 }
             }
@@ -56,7 +56,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        docker rmi ${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG} || true
+                        docker rmi ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG} || true
                     """
                 }
             }
@@ -68,7 +68,7 @@ pipeline {
             echo "Build failed!"
         }
         success {
-            echo "Image pushed: ${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}"
+            echo "Image pushed: ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG}"
         }
     }
 }
