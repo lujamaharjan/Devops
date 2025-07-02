@@ -2,7 +2,7 @@ pipeline {
     agent { label 'jenkins_slave' }
 
     environment {
-        REGISTRY_URL = 'https://harbor.registry.local'
+        REGISTRY_URL = 'harbor.registry.local'
         IMAGE_NAME = 'todo-api'
         IMAGE_TAG = "v${BUILD_NUMBER}"
         HARBOR_CREDENTIALS = credentials(' HARBOR_CREDENTIALS') // Jenkins credential ID
