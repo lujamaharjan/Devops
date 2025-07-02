@@ -5,7 +5,7 @@ pipeline {
         REGISTRY_URL = 'https://harbor.registry.local'
         IMAGE_NAME = 'todo-api'
         IMAGE_TAG = "v${BUILD_NUMBER}"
-        HARBOR_CREDENTIALS = credentials('harbor-credentials') // Jenkins credential ID
+        HARBOR_CREDENTIALS = credentials(' HARBOR_CREDENTIALS') // Jenkins credential ID
     }
 
     options {
