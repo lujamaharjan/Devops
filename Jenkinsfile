@@ -63,12 +63,16 @@ pipeline {
         }
     }
 
-    post {
-        failure {
-            echo "Build failed!"
-        }
+     post {
         success {
-            echo "Image pushed: ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG}"
+            mail to: 'sachin.maharjan@dishhome.com.np',
+            subject: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: "The build completed successfully. See details at ${env.BUILD_URL}console"
+        }
+        failure {
+            mail to: 'sachin.maharjan@dishhome.com.np',
+            subject: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: "The build failed. Check logs at ${env.BUILD_URL}console"
         }
     }
 }
