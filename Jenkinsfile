@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                       docker login ${REGISTRY_URL} -u ${HARBOR_CREDENTIALS_USR} -p ${HARBOR_CREDENTIALS_PSW}
+                       docker login ${REGISTRY_URL} -u admin -p Harbor12345
                     """
                 }
             }
