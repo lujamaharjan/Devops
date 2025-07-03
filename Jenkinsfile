@@ -76,16 +76,20 @@ pipeline {
         }
     }
 
-     post {
+    post {
         success {
-            mail to: 'sachin.maharjan@dishhome.com.np',
-            subject: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-            body: "The build completed successfully. See details at ${env.BUILD_URL}console"
+            emailext(
+                to: 'sachin.maharjan@dishhome.com.np',
+                subject: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "The build completed successfully.\nSee details at ${env.BUILD_URL}console"
+            )
         }
         failure {
-            mail to: 'sachin.maharjan@dishhome.com.np',
-            subject: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-            body: "The build failed. Check logs at ${env.BUILD_URL}console"
+            emailext(
+                to: 'sachin.maharjan@dishhome.com.np',
+                subject: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "The build failed.\nCheck logs at ${env.BUILD_URL}console"
+            )
         }
     }
 }
