@@ -66,6 +66,18 @@ pipeline {
             }
         }
 
+        stage('Scan Docker Images with Trivy') {
+            steps {
+                script {
+                    sh """
+                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG} > trivy-backend-report.txt || true
+                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} > trivy-frontend-report.txt || true
+                    """
+                    archiveArtifacts artifacts: 'trivy-*.txt', allowEmptyArchive: true
+                }
+            }
+        }
+        
         stage('Cleanup') {
             steps {
                 script {
@@ -78,14 +90,14 @@ pipeline {
 
     post {
         success {
-            emailext(
+            email(
                 to: 'sachin.maharjan@dishhome.com.np',
                 subject: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: "The build completed successfully.\nSee details at ${env.BUILD_URL}console"
             )
         }
         failure {
-            emailext(
+            email(
                 to: 'sachin.maharjan@dishhome.com.np',
                 subject: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: "The build failed.\nCheck logs at ${env.BUILD_URL}console"
