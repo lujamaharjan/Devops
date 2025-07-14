@@ -13,5 +13,10 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out .
 
+RUN addgroup --gid 1001 appgroup 
+RUN adduser --uid 1001 -G appgroup --disabled-password -h /app appuser
+RUN chown -R appuser:appgroup /app
+USER appuser
+
 ENV ASPNETCORE_URLS=http://+:80
 ENTRYPOINT ["dotnet", "TodoApi.dll"]
