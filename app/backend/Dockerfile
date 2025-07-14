@@ -13,9 +13,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out .
 
-RUN addgroup --gid 1001 appgroup 
-RUN adduser --uid 1001 -G appgroup --disabled-password -h /app appuser
-RUN chown -R appuser:appgroup /app
+RUN useradd --shell /bin/bash appuser
+RUN chown -R appuser:appuser /app
 USER appuser
 
 ENV ASPNETCORE_URLS=http://+:80
