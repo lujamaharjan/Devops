@@ -84,13 +84,15 @@ pipeline {
         
         stage('Deploy to Swarm') {
             steps {
-                script {
-                    sshagent(credentials: ['SWARM_SSH_CREDENTIALS']) {
-                        sh '''
-                            ssh -o StrictHostKeyChecking=no vagrant@192.168.56.108 \
-                                "docker stack deploy -c /home/vagrant/docker-stack.yml todo_stack"
-                        '''
-                    }
+                withCredentials([usernamePassword(
+                    credentialsId: 'SWARM_SSH_CREDENTIALS',
+                    usernameVariable: 'SSH_USER',
+                    passwordVariable: 'SSH_PASS'
+                )]) {
+                    sh """
+                        sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no $SSH_USER@192.168.56.108 \
+                            "docker stack deploy -c /home/vagrant/docker-stack.yml todo_stack"
+                    """
                 }
             }
         }
