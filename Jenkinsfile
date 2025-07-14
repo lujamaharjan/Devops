@@ -61,7 +61,9 @@ pipeline {
             steps {
                  script {
                     sh "docker push ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker push ${REGISTRY_URL}/sachin/${IMAGE_NAME}:latest"
                     sh "docker push ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker push ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:latest"
                 }
             }
         }
@@ -78,11 +80,25 @@ pipeline {
             }
         }
         
+        stage('Deploy to Swarm') {
+            steps {
+                script {
+                    sshagent(credentials: ['SWARM_SSH_CREDENTIALS']) {
+                        sh '''
+                            ssh -o StrictHostKeyChecking=no vagrant@192.168.56.108 \
+                                "docker stack deploy -c /home/vagrant/docker-stack.yml todo_stack"
+                        '''
+                    }
+                }
+            }
+        }
+
         stage('Cleanup') {
             steps {
                 script {
                     sh "docker rmi ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG} || true"
                     sh "docker rmi ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} || true"
+                    sh "docker system prune -f"
                 }
             }
         }
