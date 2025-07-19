@@ -1,0 +1,9 @@
+vm1 ansible_host=192.168.56.21 ansible_user=vagrant ansible_ssh_private_key_file=~/ansiblansible_key
+vm2 ansible_host=192.168.56.22 ansible_user=vagrant ansible_ssh_private_key_file=~/ansiblansible_key
+
+[websrvgrp]
+vm1
+
+
+[dbsrvgrp]
+vm2(venv)
