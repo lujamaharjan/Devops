@@ -4,6 +4,5 @@ vm2 ansible_host=192.168.56.22 ansible_user=vagrant ansible_ssh_private_key_file
 [websrvgrp]
 vm1
 
-
 [dbsrvgrp]
 vm2
