@@ -1,0 +1,19 @@
+---
+# install mariadb in db server
+
+- name: Setup Database Server
+  hosts: dbsrvgrp
+  become: yes
+  tasks:
+    - name: upgrade apt repository
+      apt:
+        update_cache: yes
+    - name: Install MySQL server
+      apt:
+        name: mariadb-server
+        state: present
+    - name: Start & Enable mariadb service
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
