@@ -5,9 +5,10 @@ COPY . /usr/share/nginx/html
 
 
 RUN adduser -D -s /bin/sh nginxuser
-RUN chown -R nginxuser:nginxuser /usr/share/nginx/html
+
+
 RUN chown -R nginxuser:nginxuser /usr/share/nginx/html 
-RUN mkdir -p /var/cache/nginx/client_temp \
+RUN mkdir -p /var/cache/nginx/client_temp 
 RUN chown -R nginxuser:nginxuser /var/cache/nginx
 USER nginxuser
 
