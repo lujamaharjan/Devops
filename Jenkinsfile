@@ -26,7 +26,7 @@ pipeline {
                     script {
                         sh """
                             docker build -t ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG} .
-                            docker build -t ${REGISTRY_URL}/sachin/${IMAGE_NAME}:latest .
+                            docker tag ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG} ${REGISTRY_URL}/sachin/${IMAGE_NAME}:latest
                         """
                     }
                 }
@@ -38,7 +38,7 @@ pipeline {
                 dir('app/frontend') {
                      sh """
                             docker build -t ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} .
-                            docker build -t ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:latest .
+                            docker tag ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG} ${REGISTRY_URL}/sachin/${IMAGE_NAME}:latest
                         """
                 }
             }
