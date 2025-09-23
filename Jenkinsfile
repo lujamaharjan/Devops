@@ -70,32 +70,59 @@ pipeline {
             }
         }
 
-        stage('Scan Docker Images with Trivy') {
+        // stage('Scan Docker Images with Trivy') {
+        //     steps {
+        //         script {
+        //             sh """
+        //                 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG} > trivy-backend-report.txt || true
+        //                 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} > trivy-frontend-report.txt || true
+        //             """
+        //             archiveArtifacts artifacts: 'trivy-*.txt', allowEmptyArchive: true
+        //         }
+        //     }
+        // }
+
+        // sqa_09b34b5e2b9c807f7b9ad9100753a45c5898b4cb
+        stage('SonarQube Analysis') {
+            agent { label 'jenkins_slave' }
             steps {
-                script {
-                    sh """
-                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG} > trivy-backend-report.txt || true
-                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} > trivy-frontend-report.txt || true
-                    """
-                    archiveArtifacts artifacts: 'trivy-*.txt', allowEmptyArchive: true
+                withSonarQubeEnv('local-sonarqube') {
+                    dir('app/backend') {
+                        sh '''
+                            dotnet tool install --global dotnet-sonarscanner || true
+                            export PATH="$PATH:/root/.dotnet/tools"
+
+                            dotnet sonarscanner begin \
+                            /k:"todo-api" \
+                            /n:"todo-api" \
+                            /v:"${BUILD_NUMBER}" \
+                            /d:sonar.host.url=$SONAR_HOST_URL \
+                            /d:sonar.login=$SONAR_AUTH_TOKEN
+
+                            dotnet build
+
+                            dotnet sonarscanner end \
+                            /d:sonar.login=$SONAR_AUTH_TOKEN
+                        '''
+                    }
                 }
             }
         }
         
-        stage('Deploy to Swarm') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'SWARM_SSH_CREDENTIALS',
-                    usernameVariable: 'SSH_USER',
-                    passwordVariable: 'SSH_PASS'
-                )]) {
-                    sh """
-                        sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no $SSH_USER@192.168.56.108 \
-                            "docker stack deploy -c /home/vagrant/docker-stack.yml todo_stack"
-                    """
-                }
-            }
-        }
+        // stage('Deploy to Swarm') {
+        //     steps {
+        //         withCredentials([usernamePassword(
+        //             credentialsId: 'SWARM_SSH_CREDENTIALS',
+        //             usernameVariable: 'SSH_USER',
+        //             passwordVariable: 'SSH_PASS'
+        //         )]) {
+        //             sh """
+        //                 sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no $SSH_USER@192.168.56.108 \
+        //                     "docker stack deploy -c /home/vagrant/docker-stack.yml todo_stack"
+        //             """
+        //         }
+        //     }
+        // }
 
         stage('Cleanup') {
             steps {
@@ -107,6 +134,7 @@ pipeline {
             }
         }
     }
+
 
     post {
         success {
