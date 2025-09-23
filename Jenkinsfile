@@ -88,7 +88,7 @@ pipeline {
                 withSonarQubeEnv('local-sonarqube') {
                     dir('app/backend') {
                         sh '''
-                            dotnet tool install --global dotnet-sonarscanner || true
+                           
                             export PATH="$PATH:/root/.dotnet/tools"
 
                             dotnet sonarscanner begin \
