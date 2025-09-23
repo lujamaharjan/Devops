@@ -84,7 +84,6 @@ pipeline {
 
         
         stage('SonarQube Analysis') {
-            agent { label 'jenkins_slave' }
             steps {
                 withSonarQubeEnv('local-sonarqube') {
                     dir('app/backend') {
