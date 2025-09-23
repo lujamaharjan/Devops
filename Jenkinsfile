@@ -83,13 +83,12 @@ pipeline {
         // }
 
         
-        stage('SonarQube Analysis') {
+       stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('local-sonarqube') {
                     dir('app/backend') {
                         sh '''
-                           
-                            export PATH="$PATH:/root/.dotnet/tools"
+                            export PATH="$PATH:/home/vagrant/.dotnet/tools"
 
                             dotnet sonarscanner begin \
                             /k:"todo-api" \
@@ -107,6 +106,7 @@ pipeline {
                 }
             }
         }
+
         
         // stage('Deploy to Swarm') {
         //     steps {
