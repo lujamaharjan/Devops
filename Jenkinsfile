@@ -82,7 +82,7 @@ pipeline {
         //     }
         // }
 
-        // sqa_09b34b5e2b9c807f7b9ad9100753a45c5898b4cb
+        
         stage('SonarQube Analysis') {
             agent { label 'jenkins_slave' }
             steps {
