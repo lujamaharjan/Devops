@@ -97,6 +97,8 @@ pipeline {
                             /d:sonar.host.url=$SONAR_HOST_URL \
                             /d:sonar.login=$SONAR_AUTH_TOKEN
 
+                            pwd
+                            ls -la
                             dotnet build ./app/backend/TodoApi/
 
                             dotnet sonarscanner end \
