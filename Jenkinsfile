@@ -83,45 +83,45 @@ pipeline {
         // }
 
         
-       stage('SonarQube Analysis') {
+    //    stage('SonarQube Analysis') {
+    //         steps {
+    //             withSonarQubeEnv('local-sonarqube') {
+    //                 dir('app/backend') {
+    //                     sh '''
+    //                         export PATH="$PATH:/home/vagrant/.dotnet/tools"
+
+    //                         dotnet sonarscanner begin \
+    //                         /k:"todo-api" \
+    //                         /n:"todo-api" \
+    //                         /v:"${BUILD_NUMBER}" \
+    //                         /d:sonar.host.url=$SONAR_HOST_URL \
+    //                         /d:sonar.login=$SONAR_AUTH_TOKEN
+
+    //                         dotnet build ./TodoApi/
+
+    //                         dotnet sonarscanner end \
+    //                         /d:sonar.login=$SONAR_AUTH_TOKEN
+    //                     '''
+    //                 }
+    //             }
+    //         }
+    //     }
+
+        
+        stage('Deploy to Swarm') {
             steps {
-                withSonarQubeEnv('local-sonarqube') {
-                    dir('app/backend') {
-                        sh '''
-                            export PATH="$PATH:/home/vagrant/.dotnet/tools"
-
-                            dotnet sonarscanner begin \
-                            /k:"todo-api" \
-                            /n:"todo-api" \
-                            /v:"${BUILD_NUMBER}" \
-                            /d:sonar.host.url=$SONAR_HOST_URL \
-                            /d:sonar.login=$SONAR_AUTH_TOKEN
-
-                            dotnet build ./TodoApi/
-
-                            dotnet sonarscanner end \
-                            /d:sonar.login=$SONAR_AUTH_TOKEN
-                        '''
-                    }
+                withCredentials([usernamePassword(
+                    credentialsId: 'SWARM_SSH_CREDENTIALS',
+                    usernameVariable: 'SSH_USER',
+                    passwordVariable: 'SSH_PASS'
+                )]) {
+                    sh """
+                        sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no $SSH_USER@192.168.56.108 \
+                            "docker stack deploy -c /home/vagrant/docker-stack.yml todo_stack"
+                    """
                 }
             }
         }
-
-        
-        // stage('Deploy to Swarm') {
-        //     steps {
-        //         withCredentials([usernamePassword(
-        //             credentialsId: 'SWARM_SSH_CREDENTIALS',
-        //             usernameVariable: 'SSH_USER',
-        //             passwordVariable: 'SSH_PASS'
-        //         )]) {
-        //             sh """
-        //                 sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no $SSH_USER@192.168.56.108 \
-        //                     "docker stack deploy -c /home/vagrant/docker-stack.yml todo_stack"
-        //             """
-        //         }
-        //     }
-        // }
 
         stage('Cleanup') {
             steps {
