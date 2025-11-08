@@ -25,8 +25,8 @@ pipeline {
                 dir('app/backend') {
                     script {
                         sh """
-                            docker build -t ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG} .
-                            docker tag ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG} ${REGISTRY_URL}/sachin/${IMAGE_NAME}:latest
+                            docker build -t ${REGISTRY_URL}/sachin/${IMAGE_NAME}:latest .
+                            docker tag ${REGISTRY_URL}/sachin/${IMAGE_NAME}:latest ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG} 
                         """
                     }
                 }
@@ -37,8 +37,8 @@ pipeline {
             steps {
                 dir('app/frontend') {
                      sh """
-                            docker build -t ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} .
-                            docker tag ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG} ${REGISTRY_URL}/sachin/${IMAGE_NAME}:latest
+                            docker build -t ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:latest .
+                            docker tag ${REGISTRY_URL}/sachin/${IMAGE_NAME}:latest ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG}
                         """
                 }
             }
@@ -62,10 +62,10 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                  script {
-                    sh "docker push ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG}"
                     sh "docker push ${REGISTRY_URL}/sachin/${IMAGE_NAME}:latest"
-                    sh "docker push ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker push ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG}"
                     sh "docker push ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:latest"
+                    sh "docker push ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}"  
                 }
             }
         }
