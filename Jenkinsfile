@@ -39,7 +39,7 @@ pipeline {
                 dir('app/frontend') {
                      sh """
                             docker build -t ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:latest .
-                            docker tag ${REGISTRY_URL}/sachin/${IMAGE_NAME}:latest ${REGISTRY_URL}/sachin/${IMAGE_NAME}:${IMAGE_TAG}
+                            docker tag ${REGISTRY_URL}/sachin/${IMAGE_NAME}:latest ${REGISTRY_URL}/sachin/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}
                         """
                 }
             }
