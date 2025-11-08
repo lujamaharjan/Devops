@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'jenkins_slave' }
+    // agent { label 'jenkins_slave' }
 
     environment {
         REGISTRY_URL = 'harbor.registry.local'
